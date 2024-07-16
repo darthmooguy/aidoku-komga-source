@@ -2,7 +2,7 @@
 This repository hosts the public sources that are installable directly through the Aidoku application.
 
 ## Usage
-[Add this source list](https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages/) to the Aidoku app.
+[Add this source list](https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/darthmooguy/aidoku-komga-source/gh-pages/) to the Aidoku app.
 
 ## Contributing
 Contributions are welcome!

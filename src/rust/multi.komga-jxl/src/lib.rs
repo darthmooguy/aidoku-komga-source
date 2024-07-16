@@ -233,6 +233,7 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 							"image/png",
 							"image/gif",
 							"image/webp",
+							"image/jxl",
 						]
 						.contains(&it.media_type)
 						{
