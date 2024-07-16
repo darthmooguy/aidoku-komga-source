@@ -1,5 +1,5 @@
-# Aidoku Sources
-This repository hosts the public sources that are installable directly through the Aidoku application.
+# Aidoku Komga-JXL Source
+This repository hosts a fork of the Komga extension which adds JpegXL to the list of supported image types, so that they are loaded directly instead of converted to png. You need to have iOS 17 and up for JXL support to work.
 
 ## Usage
 [Add this source list](https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/darthmooguy/aidoku-komga-source/gh-pages/) to the Aidoku app.
