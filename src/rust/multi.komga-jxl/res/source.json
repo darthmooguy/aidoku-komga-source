@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "multi.komga-jxl",
+		"lang": "multi",
+		"name": "Komga JXL",
+		"version": 2,
+		"url": "https://komga.org",
+		"nsfw": 0
+	},
+	"listings": [
+		{ "name": "Latest" },
+		{ "name": "New" },
+		{ "name": "Updated" }
+	]
+}
