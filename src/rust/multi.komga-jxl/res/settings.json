@@ -20,6 +20,13 @@
 				"placeholder": "Password",
 				"key": "password",
 				"default": "komga-demo"
+			},
+			{
+				"type": "switch",
+				"key": "enable_jxl",
+				"title": "Enable JXL image support",
+				"subtitle": "Only supported on iOS 17+",
+				"default": false
 			}
 		]
 	}

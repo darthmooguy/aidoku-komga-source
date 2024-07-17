@@ -226,15 +226,21 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 		.map(|v: Vec<PageDto>| {
 			v.iter()
 				.map(|it| {
+					let enable_jxl = defaults_get("enable_jxl");
+					let mut supported_mime_types = vec![
+						"image/jpeg",
+						"image/png",
+						"image/gif",
+						"image/webp",
+					];
+
+					if enable_jxl {
+						supported_mime_types.push("image/jxl")
+					}
+					
 					let page_url = url.clone()
 						+ "/" + itoa::Buffer::new().format(it.number)
-						+ if ![
-							"image/jpeg",
-							"image/png",
-							"image/gif",
-							"image/webp",
-							"image/jxl",
-						]
+						+ if !supported_mime_types
 						.contains(&it.media_type)
 						{
 							"?convert=png"
