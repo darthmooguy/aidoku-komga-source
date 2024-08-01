@@ -230,7 +230,7 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 						Ok(enable_jxl) => enable_jxl.as_bool().unwrap_or(false),
 						Err(_) => false,
 					};
-					let convert = match it.media_type {
+					let convert = match it.media_type.as_str() {
 						"image/jpeg" | "image/png" | "image/gif" | "image/webp" => "",
 						"image/jxl" if enable_jxl => "",
 						_ => "?convert=png",
