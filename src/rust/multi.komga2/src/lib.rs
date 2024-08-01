@@ -234,7 +234,7 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 						"image/jpeg" | "image/png" | "image/gif" | "image/webp" => "",
 						"image/jxl" if enable_jxl => "",
 						_ => "?convert=png",
-					};
+					  };
 					
 					let page_url = url.clone()
 						+ "/" + itoa::Buffer::new().format(it.number)
