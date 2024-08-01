@@ -1,0 +1,20 @@
+[
+  {
+    "id": "multi.komga-jxl",
+    "name": "Komga JXL",
+    "file": "multi.komga-jxl-v3.aix",
+    "icon": "multi.komga-jxl-v3.png",
+    "lang": "multi",
+    "version": 3,
+    "nsfw": 0
+  },
+  {
+    "id": "multi.komga2",
+    "name": "Komga 2",
+    "file": "multi.komga2-v3.aix",
+    "icon": "multi.komga2-v3.png",
+    "lang": "multi",
+    "version": 3,
+    "nsfw": 0
+  }
+]
