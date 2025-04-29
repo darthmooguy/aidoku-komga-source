@@ -233,8 +233,16 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 							None,
 						);
 					}
-					let title = if is_readlist [book.series_title.clone(), " ", book.metadata.number_sort.to_string(), " - ", book.metadata.title.clone()].concat() else book.metadata.title.clone();
-					let chapter = if is_readlist book_number else book.metadata.number_sort;
+					let title = if is_readlist {
+						 [book.series_title.clone(), " ", book.metadata.number_sort.to_string(), " - ", book.metadata.title.clone()].concat() 
+					} else { 
+						book.metadata.title.clone()
+					};
+					let chapter = if is_readlist {
+						book_number
+					 } else {
+						book.metadata.number_sort
+					 };
 					Chapter {
 						id: book.id.to_owned(),
 						url: [&base_url, "/book/", book.id].concat(),
