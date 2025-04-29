@@ -199,7 +199,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let data = Request::get(encode_uri(url))
 		.header("Authorization", &get_authorization_header())
 		.data();
-	let mut book_number = 0;
+	let mut book_number: f32 = 0;
 	serde_json::from_slice(&data)
 		.map(|v: PageWrapperDto<BookDto>| {
 			v.content
@@ -234,7 +234,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 						);
 					}
 					let title = if is_readlist {
-						 [book.series_title.clone(), " ", book.metadata.number_sort.to_string(), " - ", book.metadata.title.clone()].concat() 
+						 [book.series_title.clone(), " ".to_owned(), book.metadata.number_sort.to_string(), " - ".to_owned(), book.metadata.title.clone()].concat() 
 					} else { 
 						book.metadata.title.clone()
 					};
