@@ -211,7 +211,7 @@ impl ReadListDto<'_> {
 			title: self.name,
 			author: "".to_owned(),
 			artist: "".to_owned(),
-			categories: vec!["Read list".to_owned()],
+			categories: Vec::from("Read list".to_owned()),
 			description: self.summary,
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
