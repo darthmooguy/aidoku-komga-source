@@ -9,7 +9,7 @@ use aidoku::{
 	Chapter, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::{vec, borrow::ToOwned, string::ToString};
-use dto::{BookDto, PageDto, PageWrapperDto, SeriesDto};
+use dto::{BookDto, PageDto, PageWrapperDto, SeriesDto, ReadListDto};
 
 fn get_authorization_header() -> String {
 	let username = defaults_get("username")
@@ -112,7 +112,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		"Latest" => "/api/v1/series/latest",
 		"New" => "/api/v1/series/new",
 		"Updated" => "/api/v1/series/updated",
-		"Read lists" => "/api/v1/readlists"
+		"Read lists" => "/api/v1/readlists",
 		_ => {
 			return Err(AidokuError {
 				reason: AidokuErrorKind::Unimplemented,

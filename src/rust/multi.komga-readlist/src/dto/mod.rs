@@ -207,10 +207,10 @@ impl ReadListDto<'_> {
 		Manga {
 			url: [base_url, "/api/v1/readlists/", self.id].concat(),
 			cover: [base_url, "/api/v1/readlists/", self.id, "/thumbnail"].concat(),
-			id: ["readlist_" + self.id.to_owned()].concat(),
+			id: ["readlist_", self.id.to_owned()].concat(),
 			title: self.name,
-			author: "",
-			artist: "",
+			author: "".to_owned(),
+			artist: "".to_owned(),
 			categories: Vec::new(),
 			description: self.summary,
 			status: MangaStatus::Unknown,
