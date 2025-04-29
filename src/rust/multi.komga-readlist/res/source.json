@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "multi.komga-readlist",
+		"lang": "multi",
+		"name": "Komga readlist",
+		"version": 4,
+		"url": "https://komga.org",
+		"nsfw": 0
+	},
+	"listings": [
+		{ "name": "Latest" },
+		{ "name": "New" },
+		{ "name": "Updated" },
+		{ "name": "Read lists" }
+	]
+}
