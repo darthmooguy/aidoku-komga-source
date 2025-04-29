@@ -211,11 +211,11 @@ impl ReadListDto<'_> {
 			title: self.name,
 			author: "".to_owned(),
 			artist: "".to_owned(),
-			categories: Vec::new(),
+			categories: ["Read list".to_owned()].concat(),
 			description: self.summary,
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: aidoku::MangaViewer::Ltr,
+			viewer: aidoku::MangaViewer::Rtl,
 		}
 	}
 }
