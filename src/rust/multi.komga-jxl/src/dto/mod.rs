@@ -190,3 +190,32 @@ pub struct PageDto<'a> {
 	pub file_name: String,
 	pub media_type: &'a str,
 }
+
+#[derive(Default, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase", default)]
+pub struct ReadListDto<'a> {
+	pub id: &'a str,
+	pub name: String,
+	pub summary: String,
+	pub created_date: Option<&'a str>,
+	pub last_modified_date: Option<&'a str>,
+}
+
+impl ReadListDto<'_> {
+	pub fn into_manga<T: AsRef<str>>(self, base_url: T) -> Manga {
+		let base_url = base_url.as_ref();
+		Manga {
+			url: [base_url, "/api/v1/readlists/", self.id].concat(),
+			cover: [base_url, "/api/v1/readlists/", self.id, "/thumbnail"].concat(),
+			id: ["readlist_", self.id].concat(),
+			title: self.name,
+			author: "".to_owned(),
+			artist: "".to_owned(),
+			categories: ["Read list"].iter().map(|&s| s.to_owned()).collect(),
+			description: self.summary,
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
+			viewer: aidoku::MangaViewer::Rtl,
+		}
+	}
+}

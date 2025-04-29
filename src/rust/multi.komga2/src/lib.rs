@@ -9,7 +9,7 @@ use aidoku::{
 	Chapter, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::{vec, borrow::ToOwned, string::ToString};
-use dto::{BookDto, PageDto, PageWrapperDto, SeriesDto};
+use dto::{BookDto, PageDto, PageWrapperDto, SeriesDto, ReadListDto};
 
 fn get_authorization_header() -> String {
 	let username = defaults_get("username")
@@ -112,6 +112,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		"Latest" => "/api/v1/series/latest",
 		"New" => "/api/v1/series/new",
 		"Updated" => "/api/v1/series/updated",
+		"Read lists" => "/api/v1/readlists",
 		_ => {
 			return Err(AidokuError {
 				reason: AidokuErrorKind::Unimplemented,
@@ -125,7 +126,22 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		.header("Authorization", &get_authorization_header())
 		.data();
 
-	serde_json::from_slice(&data)
+	if listing.name == "Read lists" {
+		serde_json::from_slice(&data)
+		.map(|v: PageWrapperDto<ReadListDto>| MangaPageResult {
+			manga: v
+				.content
+				.into_iter()
+				.map(|v| v.into_manga(&base_url))
+				.collect::<Vec<_>>(),
+			has_more: !v.last,
+		})
+		.map_err(|_| AidokuError {
+			reason: AidokuErrorKind::JsonParseError,
+		})
+	}
+	else {
+		serde_json::from_slice(&data)
 		.map(|v: PageWrapperDto<SeriesDto>| MangaPageResult {
 			manga: v
 				.content
@@ -137,26 +153,49 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		.map_err(|_| AidokuError {
 			reason: AidokuErrorKind::JsonParseError,
 		})
+	}
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let base_url = get_base_url()?;
-	let url = format!("{base_url}/api/v1/series/{id}");
+	let is_readlist = id.contains("readlist_");
+	let url = if is_readlist {
+		let read_list_id = id.replace("readlist_", "");
+		format!("{base_url}/api/v1/readlists/{read_list_id}")
+	} else  {
+		format!("{base_url}/api/v1/series/{id}")
+	};
+
 	let data = Request::get(encode_uri(url))
 		.header("Authorization", &get_authorization_header())
 		.data();
-	serde_json::from_slice(&data)
-		.map(|v: SeriesDto| v.into_manga(&base_url))
-		.map_err(|_| AidokuError {
-			reason: AidokuErrorKind::JsonParseError,
-		})
+
+	if is_readlist {
+		serde_json::from_slice(&data)
+			.map(|v: ReadListDto| v.into_manga(&base_url))
+			.map_err(|_| AidokuError {
+				reason: AidokuErrorKind::JsonParseError,
+			})
+	} else {
+		serde_json::from_slice(&data)
+			.map(|v: SeriesDto| v.into_manga(&base_url))
+			.map_err(|_| AidokuError {
+				reason: AidokuErrorKind::JsonParseError,
+			})
+	}
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let base_url = get_base_url()?;
-	let url = format!("{base_url}/api/v1/series/{id}/books?unpaged=true&media_status=READY&deleted=false");
+	let is_readlist = id.contains("readlist_");
+	let url = if is_readlist {
+		let read_list_id = id.replace("readlist_", "");
+		format!("{base_url}/api/v1/readlists/{read_list_id}/books?unpaged=true&media_status=READY&deleted=false")
+	} else {
+		format!("{base_url}/api/v1/series/{id}/books?unpaged=true&media_status=READY&deleted=false")
+	};
 	let data = Request::get(encode_uri(url))
 		.header("Authorization", &get_authorization_header())
 		.data();
@@ -164,7 +203,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		.map(|v: PageWrapperDto<BookDto>| {
 			v.content
 				.iter()
-				.map(|book| {
+				.enumerate()
+				.map(|(index, book)| {
 					let mut date_updated = book
 						.metadata
 						.release_date
@@ -192,11 +232,21 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 							None,
 						);
 					}
+					let title = if is_readlist {
+						 [book.series_title.clone(), " ".to_owned(), book.metadata.number_sort.to_string(), " - ".to_owned(), book.metadata.title.clone()].concat() 
+					} else { 
+						book.metadata.title.clone()
+					};
+					let chapter = if is_readlist {
+						(index + 1) as f32
+					 } else {
+						book.metadata.number_sort
+					 };
 					Chapter {
 						id: book.id.to_owned(),
 						url: [&base_url, "/book/", book.id].concat(),
-						title: book.metadata.title.clone(),
-						chapter: book.metadata.number_sort,
+						title,
+						chapter,
 						date_updated,
 						..Default::default()
 					}

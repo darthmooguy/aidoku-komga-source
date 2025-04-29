@@ -3,13 +3,14 @@
 		"id": "multi.komga2",
 		"lang": "multi",
 		"name": "Komga 2",
-		"version": 4,
+		"version": 5,
 		"url": "https://komga.org",
 		"nsfw": 0
 	},
 	"listings": [
 		{ "name": "Latest" },
 		{ "name": "New" },
-		{ "name": "Updated" }
+		{ "name": "Updated" },
+		{ "name": "Read lists" }
 	]
 }
