@@ -211,7 +211,7 @@ impl ReadListDto<'_> {
 			title: self.name,
 			author: "".to_owned(),
 			artist: "".to_owned(),
-			categories: ["Read list"].iter().map(|s| s.to_owned()).collect(),
+			categories: ["Read list"].iter().map(|&s| s.to_owned()).collect(),
 			description: self.summary,
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
