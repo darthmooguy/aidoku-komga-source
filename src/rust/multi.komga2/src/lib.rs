@@ -79,7 +79,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						}
 					} else {
 						url.push_str("&search=");
-						url.push_str(title);
+						url.push_str(&title);
 					}
 				}
 			}
