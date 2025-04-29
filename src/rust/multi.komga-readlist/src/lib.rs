@@ -159,16 +159,19 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let base_url = get_base_url()?;
-	let url = if id.contains("readlist_") {
-		let readListId = id.replace("readlist_", "");
-		format!("{base_url}/api/v1/readlists/{readListId}")
-	 } else  {
+	let is_readlist = id.contains("readlist_");
+	let url = if is_readlist {
+		let read_list_id = id.replace("readlist_", "");
+		format!("{base_url}/api/v1/readlists/{read_list_id}")
+	} else  {
 		format!("{base_url}/api/v1/series/{id}")
-	 };
+	};
+
 	let data = Request::get(encode_uri(url))
 		.header("Authorization", &get_authorization_header())
 		.data();
-	if id.contains("readlist_") {
+
+	if is_readlist {
 		serde_json::from_slice(&data)
 			.map(|v: ReadListDto| v.into_manga(&base_url))
 			.map_err(|_| AidokuError {
@@ -186,20 +189,23 @@ fn get_manga_details(id: String) -> Result<Manga> {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let base_url = get_base_url()?;
-	let url = if id.contains("readlist_") {
-		let readListId = id.replace("readlist_", "");
-		format!("{base_url}/api/v1/readlists/{readListId}/books?unpaged=true&media_status=READY&deleted=false")
+	let is_readlist = id.contains("readlist_");
+	let url = if is_readlist {
+		let read_list_id = id.replace("readlist_", "");
+		format!("{base_url}/api/v1/readlists/{read_list_id}/books?unpaged=true&media_status=READY&deleted=false")
 	} else {
 		format!("{base_url}/api/v1/series/{id}/books?unpaged=true&media_status=READY&deleted=false")
 	};
 	let data = Request::get(encode_uri(url))
 		.header("Authorization", &get_authorization_header())
 		.data();
+	let mut book_number = 0;
 	serde_json::from_slice(&data)
 		.map(|v: PageWrapperDto<BookDto>| {
 			v.content
 				.iter()
 				.map(|book| {
+					*book_number += 1;
 					let mut date_updated = book
 						.metadata
 						.release_date
@@ -230,8 +236,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 					Chapter {
 						id: book.id.to_owned(),
 						url: [&base_url, "/book/", book.id].concat(),
-						title: book.metadata.title.clone(),
-						chapter: book.metadata.number_sort,
+						title: if is_readlist [book.series_title, " ", book.metadata.number_sort, " - ", book.metadata.title].concat() else book.metadata.title.clone(),
+						chapter: if is_readlist book_number else book.metadata.number_sort,
 						date_updated,
 						..Default::default()
 					}
